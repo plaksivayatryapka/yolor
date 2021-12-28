@@ -20,7 +20,7 @@ from tqdm import tqdm
 
 import pickle
 from copy import deepcopy
-from pycocotools import mask as maskUtils
+#from pycocotools import mask as maskUtils
 from torchvision.utils import save_image
 
 from utils.general import xyxy2xywh, xywh2xyxy
