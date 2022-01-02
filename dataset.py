@@ -4,14 +4,13 @@ import zipfile
 import shutil
 from pathlib import Path
 from sklearn.model_selection import train_test_split
+from argparse import ArgumentParser
 
-from os import listdir, getcwd
-from os.path import isfile, join
 import cv2
 import albumentations as alb
 
 
-DIR_DATASETS = 'datasets'
+parser = ArgumentParser()
 
 
 class PairImgLabel:
@@ -222,13 +221,23 @@ class Dataset:
         self.augment()
 
 
-url = 'https://morescience.app:443/charts/small.zip'
-dir_datasets = 'datasets'
-dataset_name = 'pylons_small'
-image_extension = 'png'
-test_ratio = 0.2
-augment_transformations = ['rotate']
-augment_values = [90]
+parser.add_argument("--url")
+parser.add_argument("--dir_datasets")
+parser.add_argument("--dataset_name")
+parser.add_argument("--image_extension")
+parser.add_argument("--test_ratio", type=float)
+parser.add_argument("--augment_transformations", nargs='+')
+parser.add_argument("--augment_values", nargs='+', type=int)
+
+args = parser.parse_args()
+
+url = args.url
+dir_datasets = args.datasets
+dataset_name = args.dataset_name
+image_extension = args.image_extension
+test_ratio = args.test_ratio
+augment_transformations = args.augment_transformations
+augment_values = args.augment_values
 
 d = Dataset(url, dir_datasets, dataset_name, image_extension, test_ratio, augment_transformations, augment_values)
 d.create()
