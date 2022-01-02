@@ -228,6 +228,7 @@ parser.add_argument("--image_extension")
 parser.add_argument("--test_ratio", type=float)
 parser.add_argument("--augment_transformations", nargs='+')
 parser.add_argument("--augment_values", nargs='+', type=int)
+parser.add_argument("--to_download", type=int)
 
 args = parser.parse_args()
 
@@ -238,6 +239,12 @@ image_extension = args.image_extension
 test_ratio = args.test_ratio
 augment_transformations = args.augment_transformations
 augment_values = args.augment_values
+to_download = args.to_download
 
-d = Dataset(url, dir_datasets, dataset_name, image_extension, test_ratio, augment_transformations, augment_values)
+if to_download == 1:
+    to_download = True
+else:
+    to_download = False
+
+d = Dataset(url, dir_datasets, dataset_name, image_extension, test_ratio, augment_transformations, augment_values, download=to_download)
 d.create()

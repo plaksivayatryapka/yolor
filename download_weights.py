@@ -9,6 +9,7 @@ import zipfile
 print('downloading weights')
 url = "https://morescience.app:443/charts/yolor_w6.pt"
 urllib.request.urlretrieve(url, 'yolor_w6.pt')
+print('ok')
 
 # print('unpacking dataset')
 # with zipfile.ZipFile('pylons.zip', 'r') as zip_ref:
