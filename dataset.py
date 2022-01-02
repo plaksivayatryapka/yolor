@@ -232,7 +232,7 @@ parser.add_argument("--augment_values", nargs='+', type=int)
 args = parser.parse_args()
 
 url = args.url
-dir_datasets = args.datasets
+dir_datasets = args.dir_datasets
 dataset_name = args.dataset_name
 image_extension = args.image_extension
 test_ratio = args.test_ratio
