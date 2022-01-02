@@ -222,21 +222,13 @@ class Dataset:
         self.augment()
 
 
-# path_dataset = 'datasets/pylons_test'
-# filename_txt = '2021-08-18_22-55_02_1.txt'
-
-url = 'https://morescience.app:443/charts/pylons.zip'
+url = 'https://morescience.app:443/charts/small.zip'
 dir_datasets = 'datasets'
-dataset_name = 'pylons_test'
+dataset_name = 'pylons_small'
 image_extension = 'png'
 test_ratio = 0.2
 augment_transformations = ['rotate']
 augment_values = [90]
 
-d = Dataset(url, dir_datasets, dataset_name, image_extension, test_ratio, augment_transformations, augment_values, download=False)
+d = Dataset(url, dir_datasets, dataset_name, image_extension, test_ratio, augment_transformations, augment_values)
 d.create()
-
-#a = Augmentation(path_dataset, filename_txt, image_extension)
-#a.apply_transformation('jpeg_compression', value)
-
-
