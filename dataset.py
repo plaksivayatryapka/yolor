@@ -77,48 +77,58 @@ class Augmentation:
                 label_string = f'{class_} {bbox_string}\n'
                 f.write(label_string)
 
-    def create_rotation(self):
-        rotation = alb.Affine(rotate=self.value,
+    def create_rotation(self, value):
+        rotation = alb.Affine(rotate=value,
                               always_apply=True,
                               p=1.0)
 
         return rotation
 
-    def create_rgbshift(self):
-        rotation = alb.RGBShift(r_shift_limit=self.value,
-                                g_shift_limit=self.value,
-                                b_shift_limit=self.value,
+    def create_rgbshift(self, value):
+        rotation = alb.RGBShift(r_shift_limit=value,
+                                g_shift_limit=value,
+                                b_shift_limit=value,
                                 always_apply=True,
                                 p=1.0)
 
         return rotation
 
-    def create_jpegcompression(self):
-        rotation = alb.JpegCompression(quality_lower=self.value,
-                                       quality_upper=self.value + 1,
+    def create_jpegcompression(self, value):
+        rotation = alb.JpegCompression(quality_lower=value,
+                                       quality_upper=value + 1,
                                        always_apply=True,
                                        p=1.0)
 
         return rotation
 
-    def create_transformation(self, transformation):
-        transform_rotation = alb.Compose([transformation],
+    def create_transformation(self, transformation, transformation_name):
+        if transformation_name == 'rgb_shift':
+            transformation2 = self.create_rotation(180)
+            transformations = [transformation, transformation2]
+
+        elif transformation_name == 'jpeg_compression':
+            transformation2 = self.create_rotation(270)
+            transformations = [transformation, transformation2]
+
+        else:
+            transformations = [transformation]
+
+        transform_rotation = alb.Compose(transformations,
                                          bbox_params=alb.BboxParams(format='yolo',
                                                                     label_fields=['class_labels']))
         return transform_rotation
 
     def apply_transformation(self, transformation_name, value):
-        self.value = value
         if transformation_name == 'rotate':
-            transformation = self.create_rotation()
+            transformation = self.create_rotation(value)
 
         if transformation_name == 'rgb_shift':
-            transformation = self.create_rgbshift()
+            transformation = self.create_rgbshift(value)
 
         if transformation_name == 'jpeg_compression':
-            transformation = self.create_jpegcompression()
+            transformation = self.create_jpegcompression(value)
 
-        transform = self.create_transformation(transformation)
+        transform = self.create_transformation(transformation, transformation_name)
         image = cv2.imread(self.pair.filepath_img)
 
         transformed = transform(image=image, bboxes=self.pair.bboxes, class_labels=self.pair.classes)
@@ -128,13 +138,14 @@ class Augmentation:
 
         bboxes = [[str(j) for j in i] for i in bboxes]
 
-        filename_transformed_image = Path(self.pair.filename_img).stem + f'_{transformation_name}_{self.value}.jpg'
-        filename_transformed_label = Path(self.pair.filepath_txt).stem + f'_{transformation_name}_{self.value}.txt'
+        filename_transformed_image = Path(self.pair.filename_img).stem + f'_{transformation_name}_{value}.jpg'
+        filename_transformed_label = Path(self.pair.filepath_txt).stem + f'_{transformation_name}_{value}.txt'
 
         filepath_transformed_image = os.path.join(self.pair.path_dataset, 'images', self.pair.type_, filename_transformed_image)
         filepath_transformed_label = os.path.join(self.pair.path_dataset, 'labels', self.pair.type_, filename_transformed_label)
 
         self.save_label(filepath_transformed_label, classes, bboxes)
+        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(filepath_transformed_image, image)
 
         path = os.path.join(self.pair.path_dataset, 'labels', self.pair.type_)
