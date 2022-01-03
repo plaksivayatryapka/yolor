@@ -103,12 +103,12 @@ class Augmentation:
 
     def create_transformation(self, transformation, transformation_name):
         if transformation_name == 'rgb_shift':
-            transformation2 = self.create_rotation(180)
+            transformation2 = self.create_rotation(90)
             transformations = [transformation, transformation2]
 
-        elif transformation_name == 'jpeg_compression':
-            transformation2 = self.create_rotation(270)
-            transformations = [transformation, transformation2]
+        # elif transformation_name == 'rgb_shift2':
+        #     transformation2 = self.create_rotation(270)
+        #     transformations = [transformation, transformation2]
 
         else:
             transformations = [transformation]
@@ -122,7 +122,7 @@ class Augmentation:
         if transformation_name == 'rotate':
             transformation = self.create_rotation(value)
 
-        if transformation_name == 'rgb_shift':
+        if transformation_name == 'rgb_shift' or transformation_name == 'rgb_shift2':
             transformation = self.create_rgbshift(value)
 
         if transformation_name == 'jpeg_compression':
